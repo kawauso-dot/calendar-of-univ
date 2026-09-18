@@ -4,11 +4,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="筋トレ記録">
+<meta name="apple-mobile-web-app-title" content="Being">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 </head><body>
-<title>筋トレ記録</title>
+<title>Being</title>
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -345,6 +345,7 @@
         <button class="icon-btn" id="nextMonthBtn" type="button" aria-label="次の月">→</button>
       </div>
       <button class="primary-btn" id="addBtn" type="button">＋ 記録を追加</button>
+      <button class="ghost-btn" id="exportBtn" type="button">バックアップを保存</button>
       <button class="ghost-btn" id="importBtn" type="button">データを読み込む</button>
     </div>
 
@@ -497,6 +498,7 @@ const prevMonthBtn = document.getElementById("prevMonthBtn");
 const nextMonthBtn = document.getElementById("nextMonthBtn");
 const addBtn = document.getElementById("addBtn");
 const importBtn = document.getElementById("importBtn");
+const exportBtn = document.getElementById("exportBtn");
 const calGridEl = document.getElementById("calGrid");
 const detailTitleEl = document.getElementById("detailTitle");
 const feedbackWrapEl = document.getElementById("feedbackWrap");
@@ -620,6 +622,20 @@ nextMonthBtn.addEventListener("click", () => {
   renderCalendar();
 });
 addBtn.addEventListener("click", () => openForm(null));
+exportBtn.addEventListener("click", () => {
+  const data = readLocalRecords();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  /* ファイル名を固定にすることで、Googleドライブの同じフォルダに
+     繰り返し保存したときに上書きされる（別ファイルが増えない）ようにする */
+  a.download = "being-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
 importBtn.addEventListener("click", () => {
   const text = window.prompt("バックアップしたJSONデータを貼り付けてください（上書きされます）");
   if (text === null || text.trim() === "") return;
@@ -628,6 +644,7 @@ importBtn.addEventListener("click", () => {
     const current = readLocalRecords();
     const merged = Object.assign({}, current, parsed);
     writeLocalRecords(merged);
+    records = merged;
     renderCalendar();
     window.alert("読み込みました。");
   } catch (e) {
