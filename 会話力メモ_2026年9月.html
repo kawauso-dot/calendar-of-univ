@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>会話力メモ</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Yu Mincho", "游明朝", serif;
+    color: #111111;
+    line-height: 1.8;
+    margin: 0;
+    font-size: 11pt;
+  }
+  h1 {
+    font-family: "Yu Mincho Demibold", "游明朝 Demibold", serif;
+    font-size: 22pt;
+    font-weight: bold;
+    border-bottom: 3px solid #111111;
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: #555555;
+    font-size: 10pt;
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-family: "Yu Mincho Demibold", "游明朝 Demibold", serif;
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+  }
+  .num-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #111111;
+    color: #ffffff;
+    font-size: 11pt;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .card {
+    background: #F9FAFB;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .card-label {
+    font-weight: bold;
+    color: #111111;
+    margin-bottom: 6px;
+  }
+  .card ul {
+    margin: 6px 0 0 0;
+    padding-left: 20px;
+  }
+  .card li {
+    margin-bottom: 4px;
+  }
+  .hero {
+    color: #C0392B;
+    font-weight: bold;
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+  }
+  .row .card {
+    flex: 1;
+  }
+  .note {
+    font-size: 9.5pt;
+    color: #777777;
+    margin-top: 4px;
+  }
+  .summary-box {
+    border: 2px solid #111111;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+  }
+  .summary-title {
+    font-family: "Yu Mincho Demibold", "游明朝 Demibold", serif;
+    font-weight: bold;
+    font-size: 13pt;
+    margin-bottom: 10px;
+  }
+  .summary-box ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .summary-box li {
+    margin-bottom: 6px;
+  }
+  .formula {
+    text-align: center;
+    font-size: 13pt;
+    font-weight: bold;
+    margin: 2px 0 18px;
+  }
+  .formula .sub {
+    display: block;
+    font-size: 9.5pt;
+    font-weight: normal;
+    color: #777777;
+    margin-top: 4px;
+  }
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .flow-step {
+    border: 1.5px solid #111111;
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 10pt;
+    font-weight: bold;
+    min-width: 76px;
+  }
+  .flow-step span {
+    display: block;
+    font-size: 8pt;
+    font-weight: normal;
+    color: #555555;
+    margin-top: 2px;
+  }
+  .flow-arrow {
+    font-size: 14pt;
+    color: #999999;
+    padding: 0 2px;
+  }
+  .loop-note {
+    text-align: center;
+    font-size: 9.5pt;
+    color: #777777;
+    margin-bottom: 16px;
+  }
+  .rule-list {
+    border-top: 1px solid #dddddd;
+    padding-top: 12px;
+    font-size: 10pt;
+  }
+  .rule-list div {
+    margin-bottom: 5px;
+  }
+  .rule-list b {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h1>会話力メモ</h1>
+<div class="subtitle">2026年9月　― 対話しながら随時更新 ―</div>
+
+<div class="summary-box">
+  <div class="summary-title">会話中に意識すること</div>
+
+  <div class="flow">
+    <div class="flow-step">雰囲気</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">興味</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">リアクション</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">質問</div>
+  </div>
+  <div class="loop-note">目標は「相手にとにかく話してもらうこと」。理想は相手７割・自分３割。</div>
+
+  <div class="rule-list">
+    <div>・ <b>雰囲気 = 非言語 × 自己開示</b>：話す前から結果の大半が決まる</div>
+  </div>
+</div>
+
+<h2><span class="num-badge">1</span>会話前の心構え</h2>
+<div class="note" style="margin-top:-4px; margin-bottom:14px;">出典：渡部健 著『超一流の会話力』読書メモ</div>
+<div class="card">
+  <div class="card-label">会話の達人は「話さない」</div>
+  <ul>
+    <li>どう話すかより、どう相手に話してもらうかの方がずっと大事。自分はできるだけ話さない姿勢を持つ</li>
+    <li>目標は会話の7割は相手が話す状態。しゃべくり007、さんま御殿、上田と女が吠える夜、マツコの知らない世界などのバラエティ番組にコミュニケーションの神髄が詰まっている</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">「聞いているつもり」になっている人の2つの特徴</div>
+  <ul>
+    <li>①つい自分の話をしてしまう　②余計なアドバイスや自分の意見を言ってしまう</li>
+    <li>男性は結論・解決策を求める傾向が強いが、女性は「ただ話すこと」自体が目的なことが多い。アドバイスや解決策を求めていないケースが多いと心得る</li>
+    <li>言いたいことが出てきてもぐっと我慢する。これが上達の第一歩。話す前に自分の発言をメタ認知するとよい</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">興味を持つこと＝コミュニケーションの原点</div>
+  <ul>
+    <li>相手への興味がなければコミュニケーションは絶対にうまくいかない。興味がなければ質問が思い浮かばない。興味は「持たなければならないもの」として積極的に持つ努力をする</li>
+    <li>「その話題自体には興味がないけど、あなたという人間には興味がある」というスタンスでよい。相手の人となりにフォーカスすれば話を広げられる</li>
+    <li>興味がない＝相手を自分より下に見ている、なめていることと同じ（この人から学べることは何もないと考えているのと同義）</li>
+    <li>見た目や肩書からの先入観、「どうせ」という言葉に注意。相手が5歳児でも、自分とは違う人生経験・捉え方をしている以上、自分では得られなかった学びが必ずある</li>
+    <li>相手の話をしっかり聞くにはリスペクトが不可欠。若い人からも学ぶ姿勢が人を魅力的にする</li>
+    <li>コミュニケーションは読書と同じ。自分が知らなかった経験・知識・感情を教えてくれる。「この人から何を学ぼう」という知的好奇心を持てば、自然と質問が浮かぶ</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">まとめ</div>
+  <span class="hero">どんな相手もリスペクトし、興味を持ち、学ぶ姿勢で話を聞く。</span>
+</div>
+
+<h2><span class="num-badge">2</span>第一印象・話しかけやすい雰囲気をつくる</h2>
+<div class="row">
+  <div class="card">
+    <div class="card-label">笑顔・オープンな姿勢</div>
+    内容以前に「話しかけやすい人」かどうかを決める。腕組みしない、相手に体を向けるなど。
+  </div>
+  <div class="card">
+    <div class="card-label">相手の名前を呼ぶ</div>
+    自分の名前は一番心地いい音、という心理学的効果。多用は逆効果なので、挨拶・切り出し・別れ際くらいの頻度で。
+  </div>
+</div>
+<div class="row">
+  <div class="card">
+    <div class="card-label">テンポ・テンションを合わせる</div>
+    表情と同じ次元で大切。相手より高すぎても低すぎても会話が噛み合わなくなる。
+  </div>
+  <div class="card">
+    <div class="card-label">目線・表情・動き</div>
+    <ul>
+      <li>相手の目を見て（7割程度）相槌を打つ／目で笑う</li>
+      <li>本当に面白い時だけ笑う（ずっとニヤニヤしない）</li>
+      <li>動きはゆっくり・一度に一つの動作だけ</li>
+    </ul>
+  </div>
+</div>
+<div class="card">
+  <div class="card-label">話しかけやすい人の法則</div>
+  <ul>
+    <li>話さないことが大事とはいえ、押し黙ってはダメ。「あなたのことを知りたい、もっと話を聞きたい」という姿勢が伝わる雰囲気を自分から作る</li>
+    <li>悪口・愚痴・陰口は言わない。まずは肯定から入る。「なるほど」「そうですね」から話し始める癖をつける</li>
+    <li>性格がネガティブでも、良い関係を続けたい相手にはポジティブなキャラクターを装ってよい（家族や親しい友人にまでは不要）</li>
+    <li>どんな対象にもポジティブ・ネガティブ両面があり、すべては捉え方次第。ネガティブ→ポジティブへの言い換えは日頃から練習しておく。ポジティブ発言は心理的安全性につながる</li>
+    <li>話しかけやすい人＝人間味がある、隙がある、怒らなさそうな人</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">自己開示（返報性の原理）</div>
+  <ul>
+    <li>自分の考え・生い立ち・過去の失敗談などプライベートな情報を話す。特に初対面で重要</li>
+    <li>自分が話せば相手も話しやすくなる（返報性の原理）。ただし話しすぎない</li>
+    <li>自慢話・お金・宗教・思想信条・政治の話は避ける</li>
+    <li>意識すべきは自分の立場を下げる「逆マウンティング」</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">とにかく笑う</div>
+  <ul>
+    <li>他のことを忘れても、「とにかく笑う」ことだけは覚えておく。ポジティブ発言とよく笑うことが心理的安全性を作る</li>
+  </ul>
+</div>
+
+<h2><span class="num-badge">3</span>会話中：聞く・リアクションする</h2>
+<div class="card">
+  <div class="card-label">リアクションが最重要</div>
+  <ul>
+    <li>「リアクションしているつもり」の人が多い。リアクションゼロは大きなマイナス、リアクションありでようやくプラマイゼロ、大きなリアクションで初めて印象がプラスになる</li>
+    <li>リアクションがある＝「あなたの話を聞いている」というメッセージになる</li>
+    <li>具体的な型は「オウム返し」。一言付け加えたくなるのをぐっとこらえ、オウム返しだけにとどめる。相手の表情・感情・声の大きさに合わせるのがコツ</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">沈黙を恐れない・相槌はテンションを合わせるだけ</div>
+  <ul>
+    <li>「沈黙のない会話が良い会話」は誤解。質問攻めにするとむしろ薄い会話になり、恋愛的にも発展しにくい</li>
+    <li>ゆっくり展開し、「あなたの沈黙も心地いい」という態度でいる</li>
+    <li>相手が話している間に次の質問を考えない。今の発言に全力でリアクションすることだけに集中する</li>
+    <li>相槌のテクニック（目線の秒数など）は不要。<b>相手のテンションに合わせるだけ</b>でいい（盛り上がったら盛り上がる、沈んだら沈む）</li>
+  </ul>
+  <div class="note">出典：動画「【渡部さん】トークのプロ直伝！相手に好かれる会話の極意は超シンプルです」</div>
+</div>
+<div class="card">
+  <div class="card-label">展開解決しない、感情に寄り添う（聞き上手の核心）</div>
+  <ul>
+    <li>NG例：「雨に濡れちゃって」に対して「傘持った方がいいよ」とアドバイス・解決に走る（＝展開解決）</li>
+    <li>OK例：「大変だったね、大丈夫？」と感情にだけ寄り添う。これが「私のことを一番わかってくれる」と思わせる聞き方</li>
+    <li>頭の回転が速く自信がある人ほど、つい解決したくなり苦手になりやすい</li>
+    <li>練習法：2人で1分間、自分の話もアドバイスも一切しないトレーニングをしてみる</li>
+    <li>渡部さん自身の変遷：20代＝面白さで勝負→30代＝聞き上手→40代＝質問上手（相手が一番熱を持って話せる質問をする）にたどり着いた</li>
+  </ul>
+  <div class="note">出典：動画「【渡部さん】トークのプロ直伝！相手に好かれる会話の極意は超シンプルです」</div>
+</div>
+<div class="card">
+  <div class="card-label">話題提供</div>
+  <ul>
+    <li>手っ取り早いのは共通の話題。見つからない時は共通点のフレームを広げて捉えれば必ず見つかる</li>
+    <li>共通の話題ほど自分が語りすぎたり自慢話になったりしやすいので要注意。ぐっと我慢して相手に話してもらう</li>
+    <li>自分が知らない話題はビッグチャンス（質問しまくれるから）。知ったかぶりはせず、知らないことは素直に聞く</li>
+    <li>相手の感情に対しても相槌を打つ</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">アドバイス・シーキング</div>
+  <ul>
+    <li>人がコミュニケーションで快感を抱く瞬間は「自分の言葉で相手の価値観や行動を変えられた時」。「全部やってみます」まで言うのは大変なので「調べてみます」くらいで十分</li>
+    <li>これを利用し、逆にこちらから相手にアドバイスを求める（アドバイス・シーキング）と、一貫性の原理が働いて相手はこちらに好意を持つ</li>
+    <li>返す言葉は「参考にします」はNG（そのまま取り入れないニュアンスが出る）。「勉強になりました」「ためになりました」と返す</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">メラビアンの法則</div>
+  <ul>
+    <li>言語情報・聴覚情報・視覚情報に矛盾がある場合、人は視覚情報を最も重視する</li>
+    <li>だからこそ笑顔が最重要。スマホを触るのは論外。表情と態度を最優先する</li>
+    <li>ニコニコしながら相槌を打ち、たまに質問して共通の話題を見つける。コミュニケーションの悩みの多くは結局「笑顔」で解決できる</li>
+  </ul>
+</div>
+
+<h2><span class="num-badge">4</span>会話中：質問で広げる</h2>
+<div class="card">
+  <div class="card-label">質問は「関心＝愛」を伝える手段</div>
+  <ul>
+    <li>「愛の反対は憎しみではなく無関心」。相手への関心を手軽に伝えられるのが質問</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">縦横前後の質問術</div>
+  <ul>
+    <li><b>縦</b>：相手が話したことをより詳しく・具体的に掘り下げる。ここでも笑顔とリアクションを忘れない</li>
+    <li><b>横</b>：話題の軸をずらして広げる。横に行く前に、縦の質問で何度か深掘りしてから</li>
+    <li><b>前（過去）</b>：楽しかったこと・ポジティブな感情を思い出してもらい、気持ちよく話してもらう</li>
+    <li><b>後（未来）</b>：相手の脳内にわくわくするポジティブな気持ちを引き起こす</li>
+    <li>基本の順番は「縦→横→後→横」</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">ホメ×質問</div>
+  <ul>
+    <li>「ホメ→質問」の組み合わせは相性が抜群。質問だけより応えやすくなる</li>
+    <li>初対面の相手をホメることは話題を引き出すために必要。「おべっかを使っている」という感覚は思い込み</li>
+    <li>ホメるのが苦手なら「あなたの方が詳しい、教えてほしい」という逆マウンティングでもよい</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">相手からの質問・理由を聞くこと</div>
+  <ul>
+    <li>相手からの質問は大チャンス。その裏には相手自身が話したいことが隠れていることが多い</li>
+    <li>自分の答えは早めに切り上げて同じ質問を相手に返すと、話が広がることが多い</li>
+    <li>相手の話したいことがわかったら「理由」を聞く。人の行動には必ず理由があり、そこにその人の人間性・価値観が表れる</li>
+    <li>質問の裏にある相手の心理・信条を知ろうとする意識が、相手の興味・思考を理解し、話題を広げるきっかけになる</li>
+  </ul>
+</div>
+
+<h2><span class="num-badge">5</span>関係を深める・困った場面への対処</h2>
+<div class="card">
+  <div class="card-label">好意ははっきり伝える（優しさだけでは伝わらない）</div>
+  <ul>
+    <li>「都合のいい人」で終わる原因は、優しさはあっても好意の方向をはっきり伝えていないこと</li>
+    <li>人は「好意を向けられたから好きになる」という返報性が強い。好意は少しずつでも言葉にして伝える</li>
+    <li>好かれるか分からなくても、可能性がゼロでなければ伝える価値はある（伝えられて意識し始める例は多い）</li>
+  </ul>
+  <div class="note">出典：動画「【渡部さん】トークのプロ直伝！相手に好かれる会話の極意は超シンプルです」</div>
+</div>
+<div class="card">
+  <div class="card-label">多人数会話の極意</div>
+  <ul>
+    <li>全体の流れを見つつ、「話す人・聞く人・展開する人」のうち空いているポジションに自分が収まる</li>
+    <li>これは難しいので、まずは一対一でしっかり実践を積む</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">同感できない時は「共感」だけする</div>
+  <ul>
+    <li>共感＝受け止める、同感＝受け入れる、の違い。正しい／間違いの判断はしない</li>
+    <li>二人の問題を自分が解決する必要もない。世の中には色々な価値観があり、みんなそれぞれ自分が正しいと信じる行動原理で動いている</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">悪口・愚痴を聞くとき／嫌いな人</div>
+  <ul>
+    <li>悪口や愚痴を聞くのはストレス解消の手伝いをしていること。自分は今、信頼を積んでいると捉える</li>
+    <li>嫌いな人は反面教師にする、もしくは全く知らない価値観を勉強していると捉える。どんな相手からも学ぼうとする姿勢で臨めば得るものがある</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-label">緊張・率直な意見の引き出し方</div>
+  <ul>
+    <li>緊張はさっさと相手に伝えてしまう。緊張は相手をリスペクトしているからこそ生まれるとも言える。良い緊張とは、事前準備をした上でもうまくいくか分からない時に感じるもの</li>
+    <li>相手の率直な意見・考えを聞き出したい時は、ぼんやりとした質問ではなく具体的な質問をする</li>
+  </ul>
+</div>
+
+<h2><span class="num-badge">6</span>会話の後</h2>
+<div class="card">
+  <div class="card-label">2度目・3度目につなげる</div>
+  <ul>
+    <li>初対面で話したことを覚えておく</li>
+    <li>別れた後すぐにメールなどを送る</li>
+    <li>教わったことを実践し、報告する</li>
+  </ul>
+</div>
+
+</body>
+</html>

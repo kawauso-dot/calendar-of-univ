@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ジャーナルカレンダー</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", "Yu Gothic", "Meiryo", sans-serif;
+    background: #f9f9f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) body { background: #0d0d0d; }
+  }
+  :root[data-theme="dark"] body { background: #0d0d0d; }
+
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #f2f0ea;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --border-strong:  rgba(11,11,11,0.45);
+    --accent:         #2a78d6;
+    --accent-contrast:#ffffff;
+    --danger:         #d03b3b;
+    max-width: 780px;
+    margin: 32px auto;
+    padding: 0 16px 48px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-2:      #232321;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --border-strong:  rgba(255,255,255,0.45);
+      --accent:         #3987e5;
+      --accent-contrast:#141413;
+      --danger:         #e66767;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #232321;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --border:         rgba(255,255,255,0.10);
+    --border-strong:  rgba(255,255,255,0.45);
+    --accent:         #3987e5;
+    --accent-contrast:#141413;
+    --danger:         #e66767;
+  }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  h1 { font-size: 18px; font-weight: 600; color: var(--text-primary); margin: 0 0 2px; }
+  .subtitle { font-size: 13px; color: var(--text-secondary); margin: 0 0 18px; }
+  .hidden { display: none !important; }
+
+  .view-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .view-tab-btn {
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 16px; cursor: pointer;
+  }
+  .view-tab-btn.active { background: var(--text-primary); color: var(--surface-1); border-color: transparent; }
+
+  .routine-list { display: flex; flex-direction: column; }
+  .routine-row { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--gridline); }
+  .routine-row:last-child { border-bottom: none; }
+  .routine-time { width: 52px; flex-shrink: 0; font-weight: 700; color: var(--accent); font-size: 13px; }
+  .routine-content { flex: 1; font-size: 13.5px; color: var(--text-primary); line-height: 1.7; }
+  .routine-note {
+    margin-top: 8px; background: var(--surface-2); border-radius: 8px;
+    padding: 10px 14px; font-size: 12.5px; color: var(--text-secondary);
+  }
+  .routine-note-title { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .routine-note ul { margin: 0; padding-left: 18px; }
+  .routine-diet-box {
+    margin-top: 18px; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; font-size: 13.5px; color: var(--text-primary);
+  }
+  .routine-diet-title { font-weight: 600; margin-bottom: 6px; }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tab-btn {
+    font-size: 13px; color: var(--text-secondary);
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 14px; cursor: pointer;
+  }
+  .tab-btn.active { background: var(--accent); color: var(--accent-contrast); border-color: transparent; }
+  .toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .primary-btn {
+    font-size: 13px; font-weight: 600; color: var(--accent-contrast);
+    background: var(--accent); border: none;
+    border-radius: 6px; padding: 8px 14px; cursor: pointer;
+  }
+  .ghost-btn {
+    font-size: 13px; color: var(--text-secondary);
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 14px; cursor: pointer;
+  }
+  .danger-btn {
+    font-size: 12.5px; color: var(--danger);
+    background: transparent; border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+  .cal-head {
+    text-align: center; font-size: 11px; color: var(--text-muted);
+    padding: 4px 0 8px;
+  }
+  .cal-cell {
+    position: relative;
+    min-height: 48px;
+    border: 1px solid var(--gridline);
+    border-radius: 6px;
+    background: transparent;
+    font-family: inherit;
+    padding: 6px;
+    text-align: left;
+    cursor: default;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+  .cal-cell.empty { border-color: transparent; }
+  .cal-cell.has-data { cursor: pointer; }
+  .cal-cell.today { border-color: var(--text-muted); }
+  .cal-cell.has-data:hover, .cal-cell.has-data:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .cal-cell.selected {
+    border-color: var(--text-primary);
+    border-width: 2px;
+  }
+  .cal-daynum { font-weight: 600; color: var(--text-primary); }
+  .cal-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-top: 4px; background: var(--accent); }
+
+  .detail-toprow {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 8px;
+  }
+  .detail-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 4px 0 10px; }
+  .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sleep-row {
+    display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .sleep-row b { color: var(--text-primary); }
+  .entry-box {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .entry-text { font-size: 13.5px; color: var(--text-primary); white-space: pre-wrap; line-height: 1.8; }
+  .entry-text.empty { color: var(--text-muted); font-style: italic; }
+
+  /* modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: var(--surface-1);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 24px 16px; overflow-y: auto; z-index: 20;
+  }
+  .modal-card {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px; width: 100%; max-width: 480px;
+  }
+  .modal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin: 0 0 16px; }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 6px;
+  }
+  .field input[type="date"], .field input[type="time"], .field textarea {
+    width: 100%; font: inherit; font-size: 13.5px; color: var(--text-primary);
+    background: transparent; border: 1px solid var(--border-strong); border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .field textarea { resize: vertical; min-height: 120px; }
+  .field-row { display: flex; gap: 12px; }
+  .field-row .field { flex: 1; }
+  .modal-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .modal-actions-right { display: flex; gap: 8px; }
+  .form-error { font-size: 12.5px; color: var(--danger); margin: -6px 0 12px; }
+</style>
+</head>
+<body>
+
+<div class="viz-root">
+  <div class="card">
+    <h1>ジャーナルカレンダー</h1>
+    <p class="subtitle">日付をクリックすると、その日の日記が下に表示されます</p>
+
+    <div class="view-tabs">
+      <button class="view-tab-btn active" id="viewCalendarBtn" type="button">カレンダー</button>
+      <button class="view-tab-btn" id="viewRoutineBtn" type="button">一日ルーティン</button>
+    </div>
+
+    <div id="viewCalendar">
+      <div class="toolbar">
+        <div class="tabs" id="tabs"></div>
+        <div class="toolbar-actions">
+          <button class="primary-btn" id="addBtn" type="button">＋ 記録を追加</button>
+          <button class="ghost-btn" id="exportBtn" type="button">バックアップを保存</button>
+          <button class="ghost-btn" id="importBtn" type="button">データを読み込む</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+      </div>
+
+      <div class="cal-grid" id="calGrid"></div>
+
+      <div class="detail-toprow">
+        <div id="detailTitle" class="detail-title"></div>
+        <div class="detail-actions">
+          <button class="ghost-btn" id="editBtn" type="button" style="display:none;">編集</button>
+          <button class="danger-btn" id="deleteBtn" type="button" style="display:none;">削除</button>
+        </div>
+      </div>
+      <div class="entry-box">
+        <div id="sleepRow" class="sleep-row"></div>
+        <div id="entryText" class="entry-text"></div>
+      </div>
+    </div>
+
+    <div id="viewRoutine" class="hidden">
+      <p class="subtitle" style="margin-bottom:14px;">2026年9月時点の生活リズム</p>
+      <div class="routine-list">
+        <div class="routine-row">
+          <div class="routine-time">5:30</div>
+          <div class="routine-content">
+            起きる、ベッド、カーテン<br>
+            水 → 白湯 → 舌・歯みがき（水）<br>
+            TPO：身だしなみ →「アファメーション」
+            <div class="routine-note">
+              <div class="routine-note-title">アファメーションの内容：「幸せ」について</div>
+              <ul>
+                <li>自己肯定感の定義</li>
+                <li>他人と比べないために</li>
+                <li>人の目が気になったら</li>
+                <li>自分がコントロールできるものとできないもの</li>
+                <li>言いたい人と変えたい人</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="routine-row"><div class="routine-time">6:00</div><div class="routine-content">英語</div></div>
+        <div class="routine-row"><div class="routine-time">6:45</div><div class="routine-content">朝ごはん、食器洗い、歯みがき</div></div>
+        <div class="routine-row">
+          <div class="routine-time">7:45</div>
+          <div class="routine-content">
+            図書館（学校の勉強）
+            <div class="routine-note">↓ 学校の勉強 or サークル</div>
+          </div>
+        </div>
+        <div class="routine-row"><div class="routine-time">18:00</div><div class="routine-content">夜ごはん</div></div>
+        <div class="routine-row"><div class="routine-time">19:00</div><div class="routine-content">筋トレ → プロテイン</div></div>
+        <div class="routine-row"><div class="routine-time">20:00</div><div class="routine-content">風呂 → 水（設定26℃）</div></div>
+        <div class="routine-row"><div class="routine-time">20:30</div><div class="routine-content">個人収益化</div></div>
+        <div class="routine-row"><div class="routine-time">21:30</div><div class="routine-content">本 or 教材 ⇒ 人生の戦略 → ジャーナル</div></div>
+        <div class="routine-row"><div class="routine-time">22:00</div><div class="routine-content">ねる（明日着る服を用意）</div></div>
+      </div>
+      <div class="routine-diet-box">
+        <div class="routine-diet-title">食事の方針</div>
+        とにかく量 ＋ たんぱく質重視 ＋ Na↓ &amp; K↑
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+/* このブラウザのlocalStorageだけに保存するデータ層。
+   個人の記録データはソースコードに埋め込まない（公開リポジトリのため）。 */
+const LOCAL_STORAGE_KEY = "lifestyle_records_v1";
+
+function readLocalRecords() {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (raw === null) return {};
+    return JSON.parse(raw);
+  } catch (e) {
+    return {};
+  }
+}
+function writeLocalRecords(all) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(all));
+}
+
+let records = readLocalRecords();
+
+const months = [
+  { key: "2026-09", label: "9月", year: 2026, month: 9 },
+  { key: "2026-10", label: "10月", year: 2026, month: 10 },
+  { key: "2026-11", label: "11月", year: 2026, month: 11 },
+  { key: "2026-12", label: "12月", year: 2026, month: 12 },
+];
+
+const today = new Date();
+const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+const currentMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+let activeMonthKey = months.some(m => m.key === currentMonthKey) ? currentMonthKey : months[0].key;
+let selectedDate = Object.keys(records).sort().pop() || null;
+
+const tabsEl = document.getElementById("tabs");
+const calGridEl = document.getElementById("calGrid");
+const detailTitleEl = document.getElementById("detailTitle");
+const entryTextEl = document.getElementById("entryText");
+const sleepRowEl = document.getElementById("sleepRow");
+const addBtn = document.getElementById("addBtn");
+const editBtn = document.getElementById("editBtn");
+const deleteBtn = document.getElementById("deleteBtn");
+const exportBtn = document.getElementById("exportBtn");
+const importBtn = document.getElementById("importBtn");
+const importFile = document.getElementById("importFile");
+const modalRoot = document.getElementById("modalRoot");
+const vizRootEl = document.querySelector(".viz-root");
+const viewCalendarBtn = document.getElementById("viewCalendarBtn");
+const viewRoutineBtn = document.getElementById("viewRoutineBtn");
+const viewCalendarEl = document.getElementById("viewCalendar");
+const viewRoutineEl = document.getElementById("viewRoutine");
+
+viewCalendarBtn.addEventListener("click", () => {
+  viewCalendarBtn.classList.add("active");
+  viewRoutineBtn.classList.remove("active");
+  viewCalendarEl.classList.remove("hidden");
+  viewRoutineEl.classList.add("hidden");
+});
+viewRoutineBtn.addEventListener("click", () => {
+  viewRoutineBtn.classList.add("active");
+  viewCalendarBtn.classList.remove("active");
+  viewRoutineEl.classList.remove("hidden");
+  viewCalendarEl.classList.add("hidden");
+});
+
+function weekdayOf(y, m, d) {
+  return ["日","月","火","水","木","金","土"][new Date(y, m - 1, d).getDay()];
+}
+
+function renderTabs() {
+  tabsEl.innerHTML = "";
+  months.forEach(m => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tab-btn" + (m.key === activeMonthKey ? " active" : "");
+    btn.textContent = m.label;
+    btn.addEventListener("click", () => {
+      activeMonthKey = m.key;
+      renderTabs();
+      renderCalendar();
+    });
+    tabsEl.appendChild(btn);
+  });
+}
+
+function renderCalendar() {
+  calGridEl.innerHTML = "";
+  const monthDef = months.find(m => m.key === activeMonthKey);
+  const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
+  dayNames.forEach(dn => {
+    const head = document.createElement("div");
+    head.className = "cal-head";
+    head.textContent = dn;
+    calGridEl.appendChild(head);
+  });
+
+  const firstDay = new Date(monthDef.year, monthDef.month - 1, 1);
+  const daysInMonth = new Date(monthDef.year, monthDef.month, 0).getDate();
+  const startCol = firstDay.getDay();
+
+  for (let i = 0; i < startCol; i++) {
+    const filler = document.createElement("div");
+    filler.className = "cal-cell empty";
+    calGridEl.appendChild(filler);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateKey = `${monthDef.year}-${String(monthDef.month).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const rec = records[dateKey];
+    const cell = document.createElement("button");
+    cell.type = "button";
+    let cls = "cal-cell";
+    if (rec) cls += " has-data";
+    if (dateKey === selectedDate) cls += " selected";
+    if (dateKey === todayKey) cls += " today";
+    cell.className = cls;
+
+    const numEl = document.createElement("div");
+    numEl.className = "cal-daynum";
+    numEl.textContent = d;
+    cell.appendChild(numEl);
+
+    if (rec) {
+      const dot = document.createElement("div");
+      dot.className = "cal-dot";
+      cell.appendChild(dot);
+
+      cell.addEventListener("click", () => {
+        selectedDate = dateKey;
+        renderCalendar();
+        renderDetail();
+      });
+    } else {
+      cell.disabled = true;
+    }
+
+    calGridEl.appendChild(cell);
+  }
+  renderDetail();
+}
+
+function renderDetail() {
+  const rec = selectedDate ? records[selectedDate] : null;
+
+  if (!rec) {
+    detailTitleEl.textContent = "";
+    editBtn.style.display = "none";
+    deleteBtn.style.display = "none";
+    sleepRowEl.innerHTML = "";
+    entryTextEl.className = "entry-text empty";
+    entryTextEl.textContent = "記録のある日付をクリックすると、ここに日記が表示されます。";
+    return;
+  }
+
+  const [y, m, d] = selectedDate.split("-");
+  detailTitleEl.textContent = `${Number(m)}/${Number(d)}（${rec.weekday}）`;
+  editBtn.style.display = "";
+  deleteBtn.style.display = "";
+  sleepRowEl.innerHTML = "";
+  if (rec.wakeTime || rec.bedTime) {
+    const wake = document.createElement("div");
+    wake.innerHTML = `起床 <b>${rec.wakeTime || "—"}</b>`;
+    sleepRowEl.appendChild(wake);
+    const bed = document.createElement("div");
+    bed.innerHTML = `就寝 <b>${rec.bedTime || "—"}</b>`;
+    sleepRowEl.appendChild(bed);
+  }
+  entryTextEl.className = "entry-text" + (rec.text ? "" : " empty");
+  entryTextEl.textContent = rec.text || "ジャーナルの記入はありません。";
+}
+
+addBtn.addEventListener("click", () => openForm(selectedDate && !records[selectedDate] ? selectedDate : todayKey));
+editBtn.addEventListener("click", () => {
+  if (selectedDate && records[selectedDate]) openForm(selectedDate);
+});
+deleteBtn.addEventListener("click", () => {
+  if (!selectedDate || !records[selectedDate]) return;
+  if (!window.confirm(`${selectedDate} の記録を削除しますか？`)) return;
+  delete records[selectedDate];
+  writeLocalRecords(records);
+  selectedDate = null;
+  renderCalendar();
+});
+
+exportBtn.addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(records, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "being-lifestyle-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+importBtn.addEventListener("click", () => importFile.click());
+importFile.addEventListener("change", () => {
+  const file = importFile.files[0];
+  importFile.value = "";
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      records = Object.assign({}, records, parsed);
+      writeLocalRecords(records);
+      renderCalendar();
+      window.alert("読み込みました。");
+    } catch (e) {
+      window.alert("ファイルの形式が正しくありません。");
+    }
+  };
+  reader.readAsText(file);
+});
+
+function openForm(dateKey) {
+  const existing = records[dateKey] || null;
+  vizRootEl.style.display = "none";
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeForm(); });
+
+  const card = document.createElement("div");
+  card.className = "modal-card";
+  overlay.appendChild(card);
+  modalRoot.appendChild(overlay);
+
+  const title = document.createElement("div");
+  title.className = "modal-title";
+  title.textContent = existing ? "記録を編集" : "記録を追加";
+  card.appendChild(title);
+
+  const errorEl = document.createElement("div");
+  errorEl.className = "form-error hidden";
+  card.appendChild(errorEl);
+
+  const dateField = document.createElement("div");
+  dateField.className = "field";
+  dateField.innerHTML = '<label for="fDate">日付</label>';
+  const dateInput = document.createElement("input");
+  dateInput.type = "date";
+  dateInput.id = "fDate";
+  dateInput.value = dateKey;
+  dateField.appendChild(dateInput);
+  card.appendChild(dateField);
+
+  const sleepFieldRow = document.createElement("div");
+  sleepFieldRow.className = "field-row";
+
+  const wakeField = document.createElement("div");
+  wakeField.className = "field";
+  wakeField.innerHTML = '<label for="fWake">起床時間</label>';
+  const wakeInput = document.createElement("input");
+  wakeInput.type = "time";
+  wakeInput.id = "fWake";
+  wakeInput.value = existing && existing.wakeTime ? existing.wakeTime : "";
+  wakeField.appendChild(wakeInput);
+  sleepFieldRow.appendChild(wakeField);
+
+  const bedField = document.createElement("div");
+  bedField.className = "field";
+  bedField.innerHTML = '<label for="fBed">就寝時間</label>';
+  const bedInput = document.createElement("input");
+  bedInput.type = "time";
+  bedInput.id = "fBed";
+  bedInput.value = existing && existing.bedTime ? existing.bedTime : "";
+  bedField.appendChild(bedInput);
+  sleepFieldRow.appendChild(bedField);
+
+  card.appendChild(sleepFieldRow);
+
+  const textField = document.createElement("div");
+  textField.className = "field";
+  textField.innerHTML = '<label for="fText">日記</label>';
+  const textInput = document.createElement("textarea");
+  textInput.id = "fText";
+  textInput.value = existing ? existing.text : "";
+  textField.appendChild(textInput);
+  card.appendChild(textField);
+
+  const actions = document.createElement("div");
+  actions.className = "modal-actions";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.type = "button";
+  cancelBtn.className = "ghost-btn";
+  cancelBtn.textContent = "キャンセル";
+  cancelBtn.addEventListener("click", closeForm);
+  actions.appendChild(cancelBtn);
+
+  const rightActions = document.createElement("div");
+  rightActions.className = "modal-actions-right";
+  const saveBtn = document.createElement("button");
+  saveBtn.type = "button";
+  saveBtn.className = "primary-btn";
+  saveBtn.textContent = "保存する";
+  saveBtn.addEventListener("click", () => {
+    const dk = dateInput.value;
+    if (!dk) {
+      errorEl.textContent = "日付を入力してください。";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+    const [y, m, d] = dk.split("-").map(Number);
+    records[dk] = {
+      weekday: weekdayOf(y, m, d),
+      wakeTime: wakeInput.value,
+      bedTime: bedInput.value,
+      text: textInput.value
+    };
+    writeLocalRecords(records);
+    selectedDate = dk;
+    const newDate = new Date(y, m - 1, d);
+    const newMonthKey = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, "0")}`;
+    if (months.some(mo => mo.key === newMonthKey)) activeMonthKey = newMonthKey;
+    closeForm();
+    renderTabs();
+    renderCalendar();
+  });
+  rightActions.appendChild(saveBtn);
+  actions.appendChild(rightActions);
+  card.appendChild(actions);
+}
+function closeForm() {
+  modalRoot.innerHTML = "";
+  vizRootEl.style.display = "";
+}
+
+renderTabs();
+renderCalendar();
+</script>
+
+</body>
+</html>
